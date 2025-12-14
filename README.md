@@ -1,131 +1,159 @@
-# Turborepo starter
+# My Turborepo
 
-This Turborepo starter is maintained by the Turborepo core team.
+Turborepo를 활용한 모노레포 프로젝트입니다. Next.js 16과 React 19를 사용하며, 다단계 폼 플로우 기능을 제공합니다.
 
-## Using this example
+## 프로젝트 구조
 
-Run the following command:
+이 Turborepo는 다음과 같은 패키지와 앱을 포함합니다:
 
-```sh
-npx create-turbo@latest
+### 앱 (Apps)
+
+- **`playground`**: Next.js 16 기반 애플리케이션
+  - React 19 사용
+  - 다단계 폼 플로우 구현 (이름, 생년월일, 전화번호)
+  - 커스텀 `useStepFlow` 훅 제공
+  - Modal 컴포넌트 포함
+  - Tailwind CSS v4 사용
+
+### 패키지 (Packages)
+
+- **`@repo/ui`**: 공유 React 컴포넌트 라이브러리
+  - `Button`: 기본 버튼 컴포넌트
+  - `Card`: 링크 카드 컴포넌트
+  - `Code`: 코드 표시 컴포넌트
+- **`@repo/eslint-config`**: ESLint 설정 (Next.js 및 Prettier 포함)
+- **`@repo/typescript-config`**: TypeScript 설정 파일들
+  - `base.json`: 기본 설정
+  - `nextjs.json`: Next.js 프로젝트용
+  - `react-library.json`: React 라이브러리용
+
+모든 패키지와 앱은 100% [TypeScript](https://www.typescriptlang.org/)로 작성되었습니다.
+
+## 주요 기능
+
+### 다단계 폼 플로우 (useStepFlow)
+
+`apps/playground/app/hooks/useStepFlow.ts:7`에 구현된 커스텀 훅으로, 다음 기능을 제공합니다:
+
+- **3단계 폼 프로세스**: 이름 → 생년월일 → 전화번호
+- **유효성 검사**: 각 단계별 입력값 검증
+- **자동 상태 관리**: step, canNext, isLastStep 등
+- **제출 처리**: 마지막 단계에서 onSubmit 콜백 실행
+
+사용 예시:
+```tsx
+const { step, canNext, next, submit, isLastStep, name, setName } = useStepFlow({
+  onSubmit: async () => {
+    console.log("제출!");
+  },
+});
 ```
 
-## What's inside?
+### Modal 컴포넌트
 
-This Turborepo includes the following packages/apps:
+`apps/playground/app/components/Modal.tsx:1`에 구현된 간단한 모달 컴포넌트:
+- 전체 화면 오버레이
+- 중앙 정렬 콘텐츠 박스
+- 자식 컴포넌트 렌더링
 
-### Apps and Packages
+## 기술 스택
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### 프레임워크 & 라이브러리
+- **Turborepo**: 모노레포 빌드 시스템
+- **Next.js 16**: React 프레임워크
+- **React 19**: UI 라이브러리
+- **TypeScript 5.9**: 정적 타입 체크
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### 개발 도구
+- **ESLint**: 코드 린팅
+- **Prettier**: 코드 포매팅
+- **Tailwind CSS v4**: 유틸리티 CSS 프레임워크
 
-### Utilities
+## 시작하기
 
-This Turborepo has some additional tools already setup for you:
+### 필수 요구사항
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- Node.js >= 18
+- npm 10.9.2 이상
 
-### Build
+### 설치
 
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+npm install
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 개발 서버 실행
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+모든 앱을 개발 모드로 실행:
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+npm run dev
 ```
 
-### Develop
+특정 앱만 실행:
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```bash
+npx turbo dev --filter=playground
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 빌드
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+모든 앱과 패키지 빌드:
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```bash
+npm run build
 ```
 
-### Remote Caching
+특정 앱만 빌드:
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```bash
+npx turbo build --filter=playground
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### 기타 명령어
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+```bash
+# 린트 실행
+npm run lint
+
+# 타입 체크
+npm run check-types
+
+# 코드 포매팅
+npm run format
+```
+
+## 프로젝트 파일 구조
 
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+my-turborepo/
+├── apps/
+│   └── playground/          # Next.js 애플리케이션
+│       └── app/
+│           ├── components/  # Modal 등 컴포넌트
+│           ├── hooks/       # useStepFlow 커스텀 훅
+│           ├── page.tsx     # 메인 페이지
+│           └── layout.tsx   # 레이아웃
+├── packages/
+│   ├── ui/                  # 공유 UI 컴포넌트
+│   ├── eslint-config/       # ESLint 설정
+│   └── typescript-config/   # TypeScript 설정
+├── package.json
+└── turbo.json              # Turborepo 설정
 ```
 
-## Useful Links
+## Turborepo 주요 설정
 
-Learn more about the power of Turborepo:
+`turbo.json`에 정의된 태스크:
+
+- **`build`**: 빌드 태스크 (의존성 순서대로 실행)
+- **`dev`**: 개발 서버 (캐시 비활성화, 지속 실행)
+- **`lint`**: 린트 실행
+- **`check-types`**: TypeScript 타입 체크
+
+## 유용한 링크
+
+Turborepo에 대해 더 알아보기:
 
 - [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
 - [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
@@ -133,3 +161,7 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
 - [Configuration Options](https://turborepo.com/docs/reference/configuration)
 - [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+
+## 라이선스
+
+Private 프로젝트
