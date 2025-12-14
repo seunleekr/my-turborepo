@@ -1,31 +1,47 @@
 import { useState } from "react";
 
-export function useStepFlow () {
-    const [step, setStep] = useState(1);
-    const [name, setName] = useState('');
-    const [BirthDate, setBirthDate] = useState('');
-    const [PhoneNumber, setPhoneNumber] = useState('');
+type UseStepFlowOptions = {
+    onSubmit: () => Promise<void> | void;
+};
 
-    const canNext = () => {
-        if ( step === 1 && name !== '') return;
-        if ( step === 2 && BirthDate !== '') return;
-        if ( step === 3 && PhoneNumber !== '') return;
-    };
+    export function useStepFlow(options: UseStepFlowOptions) {
+        const [step, setStep] = useState(1);
+        const [name, setName] = useState('');
+        const [birthDate, setBirthDate] = useState('');
+        const [phoneNumber, setPhoneNumber] = useState('');
+        const MAX_STEP = 3;
+        const isLastStep = step === MAX_STEP;
+      
+        const canNext =
+          (step === 1 && name !== '') ||
+          (step === 2 && birthDate !== '') ||
+          (step === 3 && phoneNumber !== '');
+              
+        const next = () => {
+            if (!canNext) return;
+            if (isLastStep) return;
 
-    const next = () => {
-        if (!canNext) return;
-        setStep((prev) => prev + 1);
-    }
+            setStep((prev) => prev + 1);
+        };
 
-    return {
-        step,
-        next,
-        canNext,
-        name,
-        setName,
-        BirthDate,
-        setBirthDate,
-        PhoneNumber,
-        setPhoneNumber
-    }
-}
+        const submit = async () => {
+            if (!isLastStep) return;
+
+            await options.onSubmit();
+            setStep(1);
+        };
+      
+        return {
+            step,
+            canNext,
+            next,
+            submit,
+            isLastStep,
+            name,
+            setName,
+            birthDate,
+            setBirthDate,
+            phoneNumber,
+            setPhoneNumber,
+        };
+      }
