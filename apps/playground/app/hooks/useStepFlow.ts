@@ -1,16 +1,31 @@
 import { useState } from "react";
 
 export function useStepFlow () {
-    // 1. step 상태 만들기 (초기값: 1)
     const [step, setStep] = useState(1);
+    const [name, setName] = useState('');
+    const [BirthDate, setBirthDate] = useState('');
+    const [PhoneNumber, setPhoneNumber] = useState('');
 
-    // 2. 다음 단계로 가는 함수
+    const canNext = () => {
+        if ( step === 1 && name !== '') return;
+        if ( step === 2 && BirthDate !== '') return;
+        if ( step === 3 && PhoneNumber !== '') return;
+    };
+
     const next = () => {
-        setStep(prev => prev + 1);
+        if (!canNext) return;
+        setStep((prev) => prev + 1);
     }
-    // 3. 밖에서 쓸 것들 return
+
     return {
         step,
         next,
+        canNext,
+        name,
+        setName,
+        BirthDate,
+        setBirthDate,
+        PhoneNumber,
+        setPhoneNumber
     }
 }
