@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useStepFlow } from "./hooks/useStepFlow";
 
 export default function Page() {
-  const [step, setStep] = useState(1);
+  const { step, next } = useStepFlow();
 
   return (
-    <>
-    <h1>현재 Step: {step}</h1>
-    <button onClick={() => setStep(step + 1)}>다음</button>
-    </>
+    <div>
+      <h1>현재 단계: </h1>
+      <p>{step} 단계</p>
+      <button onClick={next}>다음 단계</button>
+    </div>
   )
 }
